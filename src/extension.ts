@@ -46,15 +46,35 @@ function onWillSaveDocument(event: vscode.TextDocumentWillSaveEvent) {
 }
 
 function onTextChanged(event: vscode.TextDocumentChangeEvent) {
-    if (currentCodePosition == null || submitLock) {
+    if (currentCodePosition == null || insertSelection == null || submitLock) {
         return;
     }
 
     if (event.contentChanges.length == 1) {
         const change = event.contentChanges[0];
-        if (change.range.start.line == currentCodePosition.line && change.text.indexOf('\n') != -1) {
-            onSubmitCurrentPosition();
+        if (change.text.indexOf('\n') != -1) {
+            if (change.range.start.line == currentCodePosition.line) {
+                onSubmitCurrentPosition();
+            } else if (change.range.start.line < currentCodePosition.line) {
+                moveAll(1);
+            }
+        } else if (change.range.start.line < currentCodePosition.line && change.text.length == 0) {
+            moveAll(-1);
         }
+    }
+}
+
+function moveAll(lineDelta: number) {
+    if (currentCodePosition) {
+        currentCodePosition = currentCodePosition.translate(lineDelta, 0);
+    }
+
+    if (insertSelection) {
+        insertSelection = new vscode.Selection(insertSelection.start.translate(lineDelta, 0), insertSelection.end.translate(lineDelta, 0));
+    }
+
+    if (errorEndPosition) {
+        errorEndPosition = errorEndPosition.translate(lineDelta, 0);
     }
 }
 
