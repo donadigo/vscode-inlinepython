@@ -2,11 +2,12 @@
 import * as child_process from "child_process";
 
 export class PythonEval {
-    child: child_process.ChildProcess;
+    child: child_process.ChildProcess | null;
     path: string | null;
 
     constructor(path: string | null) {
         this.path = path;
+        this.child = null;
         this.run();
     }
 
@@ -32,7 +33,7 @@ export class PythonEval {
     }
 
     stop() {
-        this.child.kill();
+        this.child?.kill();
     }
 
     restart() {
@@ -46,7 +47,7 @@ export class PythonEval {
     }
 
     exec(input: string, timeout: number = 2500) {
-        if (this.child.stdin?.destroyed || this.child.killed) {
+        if (this.child?.stdin?.destroyed || this.child?.killed) {
             return new Promise<object>(resolve => {
                 resolve({
                     output: null,
@@ -56,14 +57,14 @@ export class PythonEval {
         }
 
         return new Promise<object>(resolve => {
-            this.child.stdout?.once('data', function(data) {
+            this.child?.stdout?.once('data', function(data) {
                 resolve({
                     output: PythonEval.stripOutput(data.toString()),
                     error: null
                 });
             });
 
-            this.child.stderr?.once('data', function(data) {
+            this.child?.stderr?.once('data', function(data) {
                 const error = PythonEval.stripOutput(data.toString());
                 if (!error.startsWith("...")) {
                     if (error.startsWith(">>>")) {
@@ -92,9 +93,9 @@ export class PythonEval {
     }
 
     feedInput(input: string) {
-        this.child.stdin?.cork();
-        this.child.stdin?.write(input + '\r\n\r\n');
-        this.child.stdin?.uncork();
+        this.child?.stdin?.cork();
+        this.child?.stdin?.write(input + '\r\n\r\n');
+        this.child?.stdin?.uncork();
     }
 
     private static stripOutput(output: string) {

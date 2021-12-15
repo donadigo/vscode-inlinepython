@@ -1,7 +1,8 @@
 {
   "name": "inlinepython",
   "displayName": "Inline Python",
-  "description": "Execute Python code directly in the text editor",
+  "description": "Execute & evaluate Python code directly in the text editor",
+  "publisher": "donadigo",
   "version": "1.0.0",
   "engines": {
     "vscode": "^1.51.0"
@@ -13,6 +14,11 @@
     "onCommand:inlinepython.insert"
   ],
   "main": "./out/extension.js",
+  "repository": {
+      "type": "git",
+      "url": "https://github.com/donadigo/vscode-inlinepython.git"
+  },
+
   "contributes": {
     "commands": [
       {

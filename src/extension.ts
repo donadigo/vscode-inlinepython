@@ -171,7 +171,7 @@ async function onSubmitCurrentPosition() {
     let output = '';
     if (line?.text.trim().length > 0) {
         const timeout = Number(getConfig().get('execTimeout'));
-        const result = await pyEval?.exec(line?.text, timeout);
+        const result: any = await pyEval?.exec(line?.text, timeout);
         if (result.output != null) {
             output = result.output;
         } else {
@@ -189,8 +189,8 @@ async function onSubmitCurrentPosition() {
 
     if (output.length > 0) {
         await editor.edit(editBuilder => {
-            editBuilder.delete(insertSelection);
-            editBuilder.insert(insertSelection.start, output);
+            editBuilder.delete(insertSelection!);
+            editBuilder.insert(insertSelection!.start, output);
         });
     }
 
@@ -229,7 +229,7 @@ async function removeLastError(editor: vscode.TextEditor) {
     if (errorEndPosition && currentCodePosition) {
         const line = editor.document.lineAt(currentCodePosition.line);
         await editor.edit(editBuilder => {
-            editBuilder.delete(new vscode.Range(line.range.end, errorEndPosition));
+            editBuilder.delete(new vscode.Range(line.range.end, errorEndPosition!));
         });
 
         errorEndPosition = null;
