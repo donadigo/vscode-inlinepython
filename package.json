@@ -3,7 +3,8 @@
   "displayName": "Inline Python",
   "description": "Execute & evaluate Python code directly in the text editor",
   "publisher": "donadigo",
-  "version": "1.0.0",
+  "version": "1.0.1",
+  "icon": "images/icon.png",
   "engines": {
     "vscode": "^1.51.0"
   },
